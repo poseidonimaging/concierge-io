@@ -41,7 +41,7 @@ end
 get "/space/:record" do
   @space = Space.find_by_id(params[:record])
 
-  erb :index
+  erb :space
 end
 
 get "/:object/:record/output.json" do
