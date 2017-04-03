@@ -53,13 +53,13 @@ end
 get "/:space_id/space.json" do
   @space = Space.find_by_sfid(params[:space_id])
   content_type :json
-  { "#{@space.sfid}" => "#{@space.name}", :privacy => "#{@space.privacy__c}" }.to_json
+  { "#{@space.name}" => "#{@space.sfid}", :privacy => "#{@space.privacy__c}" }.to_json
 end
 
 get "/venue/:venue_id/spaces.json" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
-  content_type :json
-  { :name => @space.name, :privacy => @space.privacy }.to_json
+  #content_type :json
+  @spaces.to_json
 end
 
 get "/:object/:record/output.json" do
