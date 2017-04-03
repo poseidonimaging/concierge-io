@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require './environments'
 require 'json'
+require 'httparty'
 
 
 get "/" do
@@ -59,7 +60,12 @@ end
 get "/venue/:venue_id/spaces.json" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
   #content_type :json
-  @spaces.to_json
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+  { 
+    :body => [ @spaces ].to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
+  #@spaces.to_json
 end
 
 get "/:object/:record/output.json" do

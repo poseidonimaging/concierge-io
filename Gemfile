@@ -5,6 +5,7 @@ gem "sinatra"
 gem "activerecord" 
 gem "sinatra-activerecord"
 gem "json"
+gem "httparty"
 
 gem 'pg'
 
