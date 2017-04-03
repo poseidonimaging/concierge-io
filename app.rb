@@ -45,7 +45,7 @@ get "/space/:record" do
 end
 
 get "/spaces/:venue_id" do
-  @spaces = Space.find_by_venue__c(params[:venue_id])
+  @spaces = Space.find_by venue__c(params[:venue_id])
 
   erb :index
 end
