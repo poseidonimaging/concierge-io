@@ -57,7 +57,7 @@ get "/:space_id/space.json" do
   { "#{@space.name}" => "#{@space.sfid}", :privacy => "#{@space.privacy__c}" }.to_json
 end
 
-post "/venue/:venue_id/spaces.json" do
+get "/venue/:venue_id/spaces.json" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
   #content_type :json
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
@@ -65,7 +65,7 @@ post "/venue/:venue_id/spaces.json" do
     :body => [ @spaces ].to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
-  #@spaces.to_json
+  @spaces.to_json
 end
 
 get "/venue/spaces.json" do
@@ -76,7 +76,7 @@ get "/venue/spaces.json" do
     :body => [ {:name => 'value1', :privacy => 'value2'} ].to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
-  #@spaces.to_json
+  @spaces.to_json
 end
 
 get "/:object/:record/output.json" do
