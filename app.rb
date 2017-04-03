@@ -30,7 +30,17 @@ get "/venues" do
 end
 
 get "/:object/:record" do
+  #@space = Space.find_by_sfid(params[:record])
+  #@venue = Venue.find_by_handle(params[:venue])
+
+  @space = Space.where(:record => @venue.id)
+
+  erb :index
+end
+
+get "/space/:record" do
   @space = Space.find_by_sfid(params[:record])
+
   erb :index
 end
 
