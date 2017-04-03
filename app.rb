@@ -29,7 +29,12 @@ get "/venues" do
   erb :index
 end
 
-get '/:object/:record/output.json' do
+get "/:object/:record" do
+  @space = Space.find_by_sfid(params[:record])
+  erb :index
+end
+
+get "/:object/:record/output.json" do
   @space = Space.find_by_sfid(params[:record])
   content_type :json
   { :name => @space.name, :privacy => @space.privacy }.to_json
