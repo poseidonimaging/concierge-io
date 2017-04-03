@@ -39,7 +39,7 @@ end
 #end
 
 get "/space/:record" do
-  @space = Space.find_by_id(params[:record])
+  @space = Space.find_by_sfid(params[:record])
 
   erb :space
 end
