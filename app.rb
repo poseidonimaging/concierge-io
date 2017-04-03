@@ -68,6 +68,11 @@ get "/:object/:record/output.json" do
   { :name => @space.name, :privacy => @space.privacy }.to_json
 end
 
+get '/example.json' do
+  content_type :json
+  { :key1 => 'value1', :key2 => 'value2' }.to_json
+end
+
 get "/create" do
   dashboard_url = 'https://dashboard.heroku.com/'
   match = /(.*?)\.herokuapp\.com/.match(request.host)
