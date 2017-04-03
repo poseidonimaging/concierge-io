@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
-ruby "2.2.0"
+ruby "2.3.1"
 
 gem "sinatra" 
 gem "activerecord" 
 gem "sinatra-activerecord"
+gem "json"
 
 gem 'pg'
 

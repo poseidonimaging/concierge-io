@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'sinatra/activerecord'
 require './environments'
+require 'json'
 
 
 get "/" do
@@ -26,6 +27,12 @@ end
 get "/venues" do
   @venues = Venue.all
   erb :index
+end
+
+get '/:object/:record/output.json' do
+  @space = Space.find_by_sfid(params[:record])
+  content_type :json
+  { :name => @space.name, :privacy => @space.privacy }.to_json
 end
 
 get "/create" do
