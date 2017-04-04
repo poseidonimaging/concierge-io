@@ -62,7 +62,7 @@ get "/venue/:venue_id/spaces.json" do
   #content_type :json
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
   { 
-    :body => [ @spaces ].to_json,
+    :body => [ @spaces.to_json ],
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
   @spaces.to_json
