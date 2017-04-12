@@ -2,6 +2,7 @@
 
 require 'sinatra'
 require 'sinatra/activerecord'
+require 'sinatra/namespace'
 require './environments'
 require 'json'
 require 'httparty'
