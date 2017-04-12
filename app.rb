@@ -31,6 +31,9 @@ namespace '/api/v1 ' do
   end
 end  
 
+get "/" do
+  'Hello World!'
+end
 
 get "/spaces" do
   @spaces = Space.all
