@@ -31,10 +31,10 @@ get "/" do
   erb :home
 end
 
-get "/spaces" do
-  @spaces = Space.all
-  erb :index
-end
+#get "/spaces" do
+#  @spaces = Space.all
+#  erb :index
+#end
 
 get "/venues" do
   @venues = Venue.all
