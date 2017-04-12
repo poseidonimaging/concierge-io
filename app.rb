@@ -20,6 +20,18 @@ class Venue < ActiveRecord::Base
   self.table_name = 'salesforce.venue__c'
 end
 
+namespace '/api/v1 ' do
+
+  before do
+    content_type 'application/json'
+  end
+
+  get '/spaces' do
+    Space.all.to_json
+  end
+end  
+
+
 get "/spaces" do
   @spaces = Space.all
   erb :index
@@ -57,7 +69,36 @@ get "/:space_id/space.json" do
   { "#{@space.name}" => "#{@space.sfid}", :privacy => "#{@space.privacy__c}" }.to_json
 end
 
+# This route works
 get "/venue/:venue_id/spaces.json" do
+  @spaces = Space.where("venue__c = ?", params[:venue_id])
+  #content_type :json
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+  { 
+    :body => @spaces.to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
+  @spaces.to_json
+end
+
+# Returns Spaces that below to a Parent 
+get "/space/:space_id/included_spaces.json" do
+  @space = Space.where("space__c = ?",  params[:space_id])
+
+  if @space.included_spaces__c = 0
+    # Use the current Space
+  @spaces = Included_Space.where("belongs_to__c = ?", params[:space_id])
+  #content_type :json
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+  { 
+    :body => @spaces.to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
+  @spaces.to_json
+end
+
+# Test Webhook
+get "/venue/:venue_id/spaces" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
   #content_type :json
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
