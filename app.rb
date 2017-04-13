@@ -16,16 +16,16 @@ class Venue < ActiveRecord::Base
   self.table_name = 'salesforce.venue__c'
 end
 
-namespace '/api/v1 ' do
+#namespace '/api/v1 ' do
 
-  before do
-    content_type 'application/json'
-  end
+#  before do
+#    content_type 'application/json'
+#  end
 
-  get '/spaces' do
-    Space.all.to_json
-  end
-end  
+#  get '/spaces' do
+#    Space.all.to_json
+#  end
+#end  
 
 get "/" do
   erb :home
