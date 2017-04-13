@@ -69,7 +69,7 @@ get "/:space_id/space.json" do
 end
 
 # This route works
-get "/venue/:venue_id/spaces.json" do
+post "/venue/:venue_id/spaces.json" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
   #content_type :json
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
