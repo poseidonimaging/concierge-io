@@ -16,16 +16,16 @@ class Venue < ActiveRecord::Base
   self.table_name = 'salesforce.venue__c'
 end
 
-#namespace '/api/v1 ' do
+namespace '/api/v1 ' do
 
-#  before do
-#    content_type 'application/json'
-#  end
+  before do
+    content_type 'application/json'
+  end
 
-#  get '/spaces' do
-#    Space.all.to_json
-#  end
-#end  
+  get '/spaces' do
+    Space.all.to_json
+  end
+end  
 
 get "/" do
   erb :home
@@ -84,7 +84,7 @@ end
 get "/space/:space_id/included_spaces.json" do
   @space = Space.where("space__c = ?",  params[:space_id])
 
-  if @space.included_spaces__c = 0
+ # if @space.included_spaces__c = 0
     # Use the current Space
   @spaces = Included_Space.where("belongs_to__c = ?", params[:space_id])
   #content_type :json
