@@ -80,14 +80,15 @@ get "/venue/:venue_id/spaces.json" do
   @spaces.to_json
 end
 
-# This route works
-post "/venue/:venue_id/spaces.json" do
+# This route works -- New test to hide Booking ID in header
+post "/:booking_id/:venue_id/spaces.json" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
+  @booking = params[:booking_id]
   #content_type :json
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
   { 
     :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json', 'Booking' => @booking}
   })
   @spaces.to_json
 end
