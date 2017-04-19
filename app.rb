@@ -74,12 +74,26 @@ get "/:venue_id/spaces" do
   @spaces
 end
 
+# Returns Spaces and adds the Booking ID to the array
 get "/:booking/:venue/spaces" do
   @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
-    s.attributes.merge("Booking": params[:booking])
+    s.attributes.merge("booking": params[:booking])
   end
 
   @spaces.to_json
+end
+
+# Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
+post "/:booking/:venue/spaces" do
+  @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
+    s.attributes.merge("booking": params[:booking])
+  end
+
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+  { 
+    :body => @spaces.to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
 end
 
 # Tests with Multi Dimensional Hash
