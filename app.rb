@@ -79,7 +79,7 @@ get "/:booking/:venue/spaces" do
     s.attributes.merge("Booking": params[:booking])
   end
 
-  s.to_json
+  @s.to_json
 end
 
 # Tests with Multi Dimensional Hash
