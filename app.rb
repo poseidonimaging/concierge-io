@@ -58,7 +58,7 @@ end
 
 get "/spaces/:venue_id" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
-
+  @spaces = 
   erb :index
 end
 
@@ -66,6 +66,32 @@ get "/:space_id/space.json" do
   @space = Space.find_by_sfid(params[:space_id])
   content_type :json
   { "#{@space.name}" => "#{@space.sfid}", :privacy => "#{@space.privacy__c}" }.to_json
+end
+
+get "/:venue_id/spaces" do
+  @spaces = Space.where("venue__c = ?", params[:venue_id])
+  
+  @spaces
+end
+
+get "/:booking/:venue/spaces" do
+  Space.where("venue__c = ?", params[:venue]).map do |s|
+    s.attributes.merge("Booking": params[:booking])
+  end
+
+  s.to_json
+end
+
+# Tests with Multi Dimensional Hash
+get "/venue/:venue_id/spaces.json" do
+  @spaces = Space.where("venue__c = ?", params[:venue_id])
+  #content_type :json
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+  { 
+    :body => @spaces.to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
+  @spaces.to_json
 end
 
 # This route works
@@ -80,15 +106,15 @@ get "/venue/:venue_id/spaces.json" do
   @spaces.to_json
 end
 
-# This route works -- New test to hide Booking ID in header
-post "/:booking_id/:venue_id/spaces.json" do
+# This route works 
+post "/venue/:venue_id/spaces.json" do
   @spaces = Space.where("venue__c = ?", params[:venue_id])
   @booking = params[:booking_id]
   #content_type :json
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
   { 
     :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json', 'Booking' => @booking}
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
   @spaces.to_json
 end
