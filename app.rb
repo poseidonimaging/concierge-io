@@ -84,7 +84,7 @@ get "/:booking/:venue/spaces" do
 end
 
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
-post "/venue/:booking/:venue/spaces.json" do
+post "/:booking/:venue/spaces" do
   @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
     s.attributes.merge("booking": params[:booking])
   end
@@ -97,29 +97,29 @@ post "/venue/:booking/:venue/spaces.json" do
 end
 
 # This route works
-get "/venue/:venue_id/spaces.json" do
-  @spaces = Space.where("venue__c = ?", params[:venue_id])
+#get "/venue/:venue_id/spaces.json" do
+#  @spaces = Space.where("venue__c = ?", params[:venue_id])
   #content_type :json
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
-  { 
-    :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-  @spaces.to_json
-end
+#  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+#  { 
+#    :body => @spaces.to_json,
+#    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+#  })
+#  @spaces.to_json
+#end
 
 # This route works 
-post "/venue/:venue_id/spaces.json" do
-  @spaces = Space.where("venue__c = ?", params[:venue_id])
-  @booking = params[:booking_id]
+#post "/venue/:venue_id/spaces.json" do
+#  @spaces = Space.where("venue__c = ?", params[:venue_id])
+#  @booking = params[:booking_id]
   #content_type :json
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
-  { 
-    :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-  @spaces.to_json
-end
+#  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+#  { 
+#    :body => @spaces.to_json,
+#    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+#  })
+#  @spaces.to_json
+#end
 
 # Returns Spaces that below to a Parent 
 get "/space/:space_id/included_spaces.json" do
