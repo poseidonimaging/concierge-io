@@ -75,7 +75,7 @@ get "/:venue_id/spaces" do
 end
 
 # Returns Spaces and adds the Booking ID to the array
-get "/:booking/:venue/spaces" do
+get "/booking/:booking/:venue/spaces" do
   @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
     s.attributes.merge("booking": params[:booking])
   end
@@ -84,7 +84,7 @@ get "/:booking/:venue/spaces" do
 end
 
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
-post "/:booking/:venue/spaces.json" do
+post "/booking/:booking/:venue/spaces.json" do
   @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
     s.attributes.merge("booking": params[:booking])
   end
