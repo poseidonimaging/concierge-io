@@ -75,11 +75,11 @@ get "/:venue_id/spaces" do
 end
 
 get "/:booking/:venue/spaces" do
-  Space.where("venue__c = ?", params[:venue]).map do |s|
+  @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
     s.attributes.merge("Booking": params[:booking])
   end
 
-  @s.to_json
+  @spaces.to_json
 end
 
 # Tests with Multi Dimensional Hash
