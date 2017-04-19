@@ -84,9 +84,29 @@ get "/hook/:booking/:venue" do
 end
 
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
+# Maybe /hook/spaces/:venue/:booking?
 post "/hook/:booking/:venue" do
   @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
     s.attributes.merge("booking": params[:booking])
+  end
+
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+  { 
+    :body => @spaces.to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
+
+  @spaces.to_json
+end
+
+# Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
+# Maybe /hook/spaces/:venue/:booking?
+post "/test/:booking/:venue/:calendar/:start/:end" do
+  @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
+    s.attributes.merge("booking": params[:booking])
+    s.attributes.merge("calendar": params[:calendar])
+    s.attributes.merge("start": params[:start])
+    s.attributes.merge("end": params[:end])
   end
 
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
