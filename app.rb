@@ -107,7 +107,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
 
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1kcoas/",
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1kc3o1/",
   { 
     :body => @spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
