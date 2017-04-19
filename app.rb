@@ -75,7 +75,7 @@ get "/:venue_id/spaces" do
 end
 
 # Returns Spaces and adds the Booking ID to the array
-get "/:booking/venue/:venue" do
+get "/hook/:booking/:venue" do
   @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
     s.attributes.merge("booking": params[:booking])
   end
@@ -84,7 +84,7 @@ get "/:booking/venue/:venue" do
 end
 
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
-post "/:booking/venue/:venue" do
+post "/hook/:booking/:venue" do
   @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
     s.attributes.merge("booking": params[:booking])
   end
@@ -94,6 +94,8 @@ post "/:booking/venue/:venue" do
     :body => @spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
+
+  @spaces.to_json
 end
 
 # This route works
