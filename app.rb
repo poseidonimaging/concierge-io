@@ -107,7 +107,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
 
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1kc3o1/",
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
   { 
     :body => @spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
@@ -123,7 +123,7 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
 
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
   { 
     :body => @spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
