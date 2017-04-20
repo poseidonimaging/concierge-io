@@ -134,7 +134,7 @@ end
 
 # Goal is to Return Included Spaces
 get "/included/:space" do
-  @spaces = Included_Space.where("belongs_to__c = ?", params[:space])
+  @spaces = Included_Spaces.where("belongs_to__c = ?", params[:space])
 
   #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
   #{ 
