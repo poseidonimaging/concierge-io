@@ -16,6 +16,10 @@ class Venue < ActiveRecord::Base
   self.table_name = 'salesforce.venue__c'
 end
 
+class Included_Spaces < ActiveRecord::Base
+  self.table_name = 'salesforce.included_spaces__c'
+end
+
 #namespace '/api/v1 ' do
 
 #  before do
