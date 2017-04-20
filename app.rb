@@ -132,6 +132,19 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   @spaces.to_json
 end
 
+# Goal is to Return Included Spaces
+get "/included/:space" do
+  @spaces = Included_Space.where("belongs_to__c = ?", params[:space])
+
+  #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
+  #{ 
+  #  :body => @spaces.to_json,
+  #  :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  #})
+
+  @spaces.to_json
+end
+
 # This route works
 #get "/venue/:venue_id/spaces.json" do
 #  @spaces = Space.where("venue__c = ?", params[:venue_id])
