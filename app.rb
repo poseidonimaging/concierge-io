@@ -107,11 +107,21 @@ end
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
 # Maybe /hook/spaces/:venue/:booking?
 get "/hook/:booking/:venue/:calendar/:start/:end" do
-  @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
+  @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
+    s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
+  end
+
+  @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
 
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
+  { 
+    :body => @sub_spaces.to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
+
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
   { 
     :body => @spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
@@ -123,11 +133,21 @@ end
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
 # Maybe /hook/spaces/:venue/:booking?
 post "/hook/:booking/:venue/:calendar/:start/:end" do
-  @spaces = Space.where("venue__c = ?", params[:venue]).map do |s|
+  @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
+    s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
+  end
+
+  @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
 
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
+  { 
+    :body => @sub_spaces.to_json,
+    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  })
+
+  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
   { 
     :body => @spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
