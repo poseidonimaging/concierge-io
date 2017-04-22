@@ -127,7 +127,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
 
-  @spaces.to_json
+  @spaces
 end
 
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
@@ -141,6 +141,8 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
 
+  #@included_spaces = Included_Spaces.where("belongs_to__c = ?", params[:space])
+
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
   { 
     :body => @sub_spaces.to_json,
@@ -153,7 +155,7 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
 
-  @spaces.to_json
+  @spaces
 end
 
 # Goal is to Return Included Spaces
