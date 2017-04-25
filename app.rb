@@ -171,7 +171,7 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
 
-  @included_spaces
+  @spaces.length
 end
 
 # Goal is to Return Included Spaces
