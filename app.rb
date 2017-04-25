@@ -135,7 +135,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
 
-  @spaces.length
+  spaces.length
 end
 
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
@@ -171,7 +171,7 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
 
-  @spaces.length
+  spaces.length
 end
 
 # Goal is to Return Included Spaces
