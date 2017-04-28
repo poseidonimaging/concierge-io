@@ -95,9 +95,8 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   end
   puts "Made Sub Spaces Hash"
 
-  @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
-    s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
-  end
+  @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0)
+  
   puts "Made Spaces Hash"
 
   puts "Entering Loop"
