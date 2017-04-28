@@ -104,17 +104,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   #.where(venue_id: params[:venue])
   #.select('spaces.name')
 
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
-  { 
-    :body => @sub_spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
-  { 
-    :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
+  @sub_spaces.to_json
 
   @spaces.to_json
 end
@@ -168,7 +158,6 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   })
   puts "Sent Spaces Hook"
 
-  @spaces.to_json
 end
 
 # Goal is to Return Included Spaces
