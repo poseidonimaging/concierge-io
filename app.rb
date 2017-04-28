@@ -123,10 +123,10 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   end
 
   #@included_spaces = Included_Spaces.where("belongs_to__c = ?", params[:space])
-  @included_spaces = Space.joins(:venue)
-  .joins(:included_spaces)
-  .where(venue_id: params[:venue])
-  .select('spaces.name')
+  #@included_spaces = Space.joins(:venue)
+  #.joins(:included_spaces)
+  #.where(venue_id: params[:venue])
+  #.select('spaces.name')
 
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
   { 
