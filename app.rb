@@ -102,9 +102,9 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
 
   puts "Entering Loop"
   @spaces.each do |space|
-    space = "#{space.sfid}"
+    space = "#{space.id}"
     @included_spaces = Included_Space.where("belongs_to__c = ?", space)
-    puts '#{space.sfid}'
+    puts '#{space.id}'
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
     { 
       :body => @included_spaces.to_json,
