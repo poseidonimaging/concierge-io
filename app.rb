@@ -119,6 +119,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   #.where(venue_id: params[:venue])
   #.select('spaces.name')
 
+  puts "Writing Spaces"
   @spaces.to_json
 end
 
