@@ -26,40 +26,16 @@ class Included_Space < ActiveRecord::Base
   #belongs_to :space
 end
 
-
-#namespace '/api/v1 ' do
-
-#  before do
-#    content_type 'application/json'
-#  end
-
-#  get '/spaces' do
-#    Space.all.to_json
-#  end
-#end  
+# Routes
 
 get "/" do
   erb :home
 end
 
-#get "/spaces" do
-#  @spaces = Space.all
-#  erb :index
-#end
-
 get "/venues" do
   @venues = Venue.all
   erb :index
 end
-
-#get "/:object/:record" do
-  #@space = Space.find_by_sfid(params[:record])
-  #@venue = Venue.find_by_handle(params[:venue])
-
-#  @space = Space.where(:record => @venue.id)
-
-#  erb :index
-#end
 
 get "/space/:record" do
   @space = Space.find_by_sfid(params[:record])
@@ -200,32 +176,7 @@ get "/included/:space" do
   @spaces.to_json
 end
 
-# This route works
-#get "/venue/:venue_id/spaces.json" do
-#  @spaces = Space.where("venue__c = ?", params[:venue_id])
-  #content_type :json
-#  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
-#  { 
-#    :body => @spaces.to_json,
-#    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-#  })
-#  @spaces.to_json
-#end
-
-# This route works 
-#post "/venue/:venue_id/spaces.json" do
-#  @spaces = Space.where("venue__c = ?", params[:venue_id])
-#  @booking = params[:booking_id]
-  #content_type :json
-#  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
-#  { 
-#    :body => @spaces.to_json,
-#    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-#  })
-#  @spaces.to_json
-#end
-
-# Returns Spaces that below to a Parent 
+# Returns Spaces that belong to a Parent 
 get "/space/:space_id/included_spaces.json" do
   @space = Space.where("space__c = ?",  params[:space_id])
 
