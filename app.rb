@@ -10,20 +10,20 @@ require 'httparty'
 class Venue < ActiveRecord::Base
   self.table_name = 'salesforce.venue__c'
 
-  has_many :spaces
+  #has_many :spaces
 end
 
 class Space < ActiveRecord::Base
   self.table_name = 'salesforce.space__c'
 
-  belongs_to :venue
-  has_many :included_spaces
+  #belongs_to :venue
+  #has_many :included_spaces
 end
 
 class Included_Space < ActiveRecord::Base
   self.table_name = 'salesforce.included_spaces__c'
 
-  belongs_to :space
+  #belongs_to :space
 end
 
 
