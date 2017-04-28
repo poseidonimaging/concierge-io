@@ -184,6 +184,19 @@ get "/included/:space" do
   #  :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   #})
 
+  puts "Entering Loop"
+  @spaces.each do |space|
+    puts "#{space.belongs_to__c}"
+  #  space = "#{space.id}"
+  #  @included_spaces = Included_Space.where("belongs_to__c = ?", space)
+  #  puts '#{space.id}'
+  #  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+  #  { 
+  #    :body => @included_spaces.to_json,
+  #    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+  #  })
+  end
+  
   @spaces.to_json
 end
 
