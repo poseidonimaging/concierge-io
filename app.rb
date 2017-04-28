@@ -101,7 +101,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
 
   puts "Entering Loop"
   @spaces.each do |space|
-    puts "#{space.name}"
+    puts "#{space.sfid}"
   #  space = "#{space.id}"
   #  @included_spaces = Included_Space.where("belongs_to__c = ?", space)
   #  puts '#{space.id}'
@@ -196,7 +196,7 @@ get "/included/:space" do
   #    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   #  })
   end
-  
+
   @spaces.to_json
 end
 
