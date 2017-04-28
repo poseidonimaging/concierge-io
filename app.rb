@@ -90,17 +90,18 @@ end
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
 # Maybe /hook/spaces/:venue/:booking?
 get "/hook/:booking/:venue/:calendar/:start/:end" do
-  @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
-    s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
-  end
-  puts "Made Sub Spaces Hash"
+  #@sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
+  #  s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
+  #end
+  #puts "Made Sub Spaces Hash"
 
   @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0)
-  
+
   puts "Made Spaces Hash"
 
   puts "Entering Loop"
-  #@spaces.each do |space|
+  @spaces.each do |space|
+    puts "#{space.name}"
   #  space = "#{space.id}"
   #  @included_spaces = Included_Space.where("belongs_to__c = ?", space)
   #  puts '#{space.id}'
@@ -109,7 +110,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   #    :body => @included_spaces.to_json,
   #    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   #  })
-  #end
+  end
   puts "Backend of Loop"
 
   #@included_spaces = Included_Spaces.where("belongs_to__c = ?", params[:space])
