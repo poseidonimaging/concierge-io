@@ -131,8 +131,8 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   end
 
   @spaces.each do |s|
-    space = s.sfid
-    @included_spaces = Included_Space.where("belongs_to__c = ?", space)
+    #space = s.sfid
+    @included_spaces = Included_Space.where("belongs_to__c = ?", s.sfid)
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
     { 
       :body => @included_spaces.to_json,
