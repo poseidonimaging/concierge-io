@@ -140,12 +140,6 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
 
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1g6475/",
-  { 
-    :body => @included_spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-
   @spaces
 end
 
@@ -187,12 +181,6 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
   { 
     :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1g6475/",
-  { 
-    :body => @included_spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
   })
 
