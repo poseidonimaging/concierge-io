@@ -93,10 +93,25 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
+  puts "Made Sub Spaces Hash"
 
   @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
+  puts "Made Spaces Hash"
+
+  puts "Entering Loop"
+  @spaces.each do |s|
+    #space = s.sfid
+    @included_spaces = Included_Space.where("belongs_to__c = ?", s.sfid)
+    puts '#{s.sfid}'
+    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+    { 
+      :body => @included_spaces.to_json,
+      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    })
+  end
+  puts "Backend of Loop"
 
   #@included_spaces = Included_Spaces.where("belongs_to__c = ?", params[:space])
   #@included_spaces = Space.joins(:venue)
