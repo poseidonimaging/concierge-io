@@ -130,15 +130,15 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
 
-  #@spaces.each do |s|
-  #  space = s.sfid
-  #  @included_spaces = Included_Space.where("belongs_to__c = ?", space)
-  #  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
-  #  { 
-  #    :body => @included_spaces.to_json,
-  #    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  #  })
-  #end
+  @spaces.each do |s|
+    space = s.sfid
+    @included_spaces = Included_Space.where("belongs_to__c = ?", space)
+    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+    { 
+      :body => @included_spaces.to_json,
+      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    })
+  end
 
   #@included_spaces = Space.joins(:venue)
   #.joins(:included_spaces)
@@ -165,7 +165,7 @@ end
 
 # Goal is to Return Included Spaces
 get "/included/:space" do
-  @spaces = Included_Spaces.where("belongs_to__c = ?", params[:space])
+  @spaces = Included_Space.where("belongs_to__c = ?", params[:space])
 
   #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
   #{ 
