@@ -109,7 +109,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   puts "Entering Loop"
   @spaces.each do |space|
     #space_id = "#{space.sfid}"
-    puts "#{space.name}"
+    puts "#{space.sfid}"
     #@included_spaces = Included_Space.where("belongs_to__c = ?", space_id)
     #puts "Posting #{space.sfid} to Zapier"
     #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
