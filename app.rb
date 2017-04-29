@@ -107,15 +107,16 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
  # puts "Retrieved and Mapped Sub Spaces"
 
   puts "Entering Loop"
-  @spaces.each do |s|
-    space = "#{s.sfid}"
-    @included_spaces = Included_Space.where("belongs_to__c = ?", space)
-    puts "Posting #{space.sfid} to Zapier"
-    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
-    { 
-      :body => @included_spaces.to_json,
-      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-    })
+  @spaces.each do |space|
+    #space_id = "#{space.sfid}"
+    puts "#{space.name}"
+    #@included_spaces = Included_Space.where("belongs_to__c = ?", space_id)
+    #puts "Posting #{space.sfid} to Zapier"
+    #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+    #{ 
+    #  :body => @included_spaces.to_json,
+    #  :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    #})
   end
   puts "Out of Loop"
 
