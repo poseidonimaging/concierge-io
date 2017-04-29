@@ -107,8 +107,8 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
  # puts "Retrieved and Mapped Sub Spaces"
 
   puts "Entering Loop"
-  @spaces.each do |space|
-    space = "#{space.sfid}"
+  @spaces.each do |s|
+    space = "#{s.sfid}"
     @included_spaces = Included_Space.where("belongs_to__c = ?", space)
     puts "Posting #{space.sfid} to Zapier"
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
