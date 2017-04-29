@@ -96,21 +96,21 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0)
   puts "Retrieved Parent Spaces"
 
-  #@spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
-  #  s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
-  #end
-  #puts "Retrieved and Mapped Spaces"
+  @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
+    s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
+  end
+  puts "Retrieved and Mapped Spaces"
 
- #@sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
- #   s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
- # end
- # puts "Retrieved and Mapped Sub Spaces"
+  @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
+    s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
+  end
+  puts "Retrieved and Mapped Sub Spaces"
 
   puts "Entering Loop"
   @parent_spaces.each do |space|
     space_id = "#{space.sfid}"
     @included_spaces = Included_Space.where("belongs_to__c = ?", space_id)
-    puts "Posting #{space.sfid} to Zapier"
+    puts "Posting #{space.name} - #{space.sfid} to Zapier"
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
     { 
       :body => @included_spaces.to_json,
