@@ -93,7 +93,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   
   puts "Got the data"
   
-  @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0)
+  @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0)
   puts "Retrieved Parent Spaces"
 
   #@spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
@@ -107,7 +107,7 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
  # puts "Retrieved and Mapped Sub Spaces"
 
   puts "Entering Loop"
-  @spaces.each do |space|
+  @parent_spaces.each do |space|
     space_id = "#{space.sfid}"
     @included_spaces = Included_Space.where("belongs_to__c = ?", space_id)
     puts "Posting #{space.sfid} to Zapier"
