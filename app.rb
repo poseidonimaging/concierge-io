@@ -90,36 +90,34 @@ end
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
 # Maybe /hook/spaces/:venue/:booking?
 get "/hook/:booking/:venue/:calendar/:start/:end" do
-  #@sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
-  #  s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
-  #end
-  #puts "Made Sub Spaces Hash"
+  
+  puts "Got the data"
+  
+  @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0)
+  puts "Retrieved Parent Spaces"
 
   @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", params[:venue],0).map do |s|
     s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
   end
+  puts "Retrieved and Mapped Spaces"
 
-  puts "Made Spaces Hash"
+  @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", params[:venue],0).map do |s|
+    s.attributes.merge("booking": params[:booking],"calendar": params[:calendar],"start": params[:start],"end": params[:end])
+  end
+  puts "Retrieved and Mapped Sub Spaces"
 
   puts "Entering Loop"
-  @spaces.each do |space|
-    puts "#{space.sfid}"
+  @parent_spaces.each do |space|
     space = "#{space.sfid}"
     @included_spaces = Included_Space.where("belongs_to__c = ?", space)
-    puts '#{space.id}'
+    puts "Posting #{space.sfid} to Zapier"
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
     { 
       :body => @included_spaces.to_json,
       :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
     })
   end
-  puts "Backend of Loop"
-
-  #@included_spaces = Included_Spaces.where("belongs_to__c = ?", params[:space])
-  #@included_spaces = Space.joins(:venue)
-  #.joins(:included_spaces)
-  #.where(venue_id: params[:venue])
-  #.select('spaces.name')
+  puts "Out of Loop"
 
   puts "Writing Spaces"
   @spaces.to_json
@@ -173,6 +171,8 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   })
   puts "Sent Spaces Hook"
 
+  puts "Writing Spaces"
+  @spaces.to_json
 end
 
 # Goal is to Return Included Spaces
