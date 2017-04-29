@@ -120,8 +120,8 @@ get "/hook/:booking/:venue/:calendar/:start/:end" do
   end
   puts "Out of Loop"
 
-  #puts "Writing Spaces"
-  #@spaces.to_json
+  puts "Writing Spaces"
+  @spaces.to_json
 end
 
 # Returns Spaces and adds the Booking ID to the array. Sends to Zapier.
