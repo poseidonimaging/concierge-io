@@ -182,8 +182,6 @@ end
 
 # Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
 post "/hook/retrieve/spaces" do
-  puts "Hello Data"
-  puts request.env
   if request.env['HTTP_AUTH_TOKEN'] === "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
@@ -242,7 +240,7 @@ post "/hook/retrieve/spaces" do
     puts "Sent Spaces Hook"
     puts "Writing Spaces"
     @spaces.to_json
-    [200, {}, "success"] #this is how it should be
+    [200, {}, "status"=>"success"]
   else
     [400, {}, "Authorization Failed"]
   end
