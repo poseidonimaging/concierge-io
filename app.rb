@@ -152,6 +152,7 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
     { 
       :body => @included_spaces.to_json,
       :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+      # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
     })
   end
   puts "Out of Loop"
@@ -161,6 +162,7 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   { 
     :body => @sub_spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    # Sends all Included Spaces to Check Availability Zap
   })
   puts "Sent Sub Spaces Hook"
 
@@ -168,6 +170,8 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   { 
     :body => @spaces.to_json,
     :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    # Sends Parent Space to Compile Parent Space Availability
+    # Zap delayed from above two, compiling the information from both into Parent Availability
   })
   puts "Sent Spaces Hook"
 
@@ -175,85 +179,69 @@ post "/hook/:booking/:venue/:calendar/:start/:end" do
   @spaces.to_json
 end
 
-# Goal is to Return Included Spaces
-get "/included/:space" do
-  @spaces = Included_Space.where("belongs_to__c = ?", params[:space])
 
-  #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
-  #{ 
-  #  :body => @spaces.to_json,
-  #  :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  #})
+# Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
+post "/hook/retrieve/spaces" do
+  if request.env['HTTP_AUTHORIZATION'] == "abcd1234"
+    data = JSON.parse(request.body.read)
+    # converted data hash
+    #  {"end"=>"2017-06-15T00:00:00.000+0000",
+    #    "name"=>"Side Patio",
+    #    "booking_name"=>"Another Testwood 2",
+    #    "venue"=>"a054100000FsEA8AAN",
+    #    "start"=>"2017-06-14T20:00:00.000+0000",
+    #    "calendar"=>"spacesift.com_oifjmejd2uui1bp254l4u2gloc@group.calendar.google.com",
+    #    "sfid"=>"a014100000AYiWHAA1",
+    #    "booking"=>"a004100000EHiJDAA1"}
 
-  puts "Entering Loop"
-  @spaces.each do |space|
-    puts "#{space.belongs_to__c}"
-  #  space = "#{space.id}"
-  #  @included_spaces = Included_Space.where("belongs_to__c = ?", space)
-  #  puts '#{space.id}'
-  #  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
-  #  { 
-  #    :body => @included_spaces.to_json,
-  #    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  #  })
+    #  query each value of the hash by data['name of the key']
+    #  Example data['end']
+    puts "Got the data"
+    @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0)
+    puts "Retrieved Parent Spaces"
+    @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
+    s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+    data['start'],"end": data['end'])
+    end
+    puts "Retrieved and Mapped Spaces"
+    @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?",
+    data['venue'],0).map do |s|
+    s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+    data['start'],"end": data['end'])
+    end
+    puts "Retrieved and Mapped Sub Spaces"
+    puts "Entering Loop"
+    @parent_spaces.each do |space|
+    space = "#{space.sfid}"
+    @included_spaces = Included_Space.where("belongs_to__c = ?", space)
+    puts "Posting #{space.sfid} to Zapier"
+    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+    {
+      :body => @included_spaces.to_json,
+      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+      # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
+    })
+    end
+    puts "Out of Loop"
+    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
+    {
+      :body => @sub_spaces.to_json,
+      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+      # Sends all Included Spaces to Check Availability Zap
+    })
+    puts "Sent Sub Spaces Hook"
+    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
+    {
+      :body => @spaces.to_json,
+      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+      # Sends Parent Space to Compile Parent Space Availability
+      # Zap delayed from above two, compiling the information from both into Parent Availability
+    })
+    puts "Sent Spaces Hook"
+    puts "Writing Spaces"
+    @spaces.to_json
+    [200, {}, "Success"]
+  else
+    [400, {}, "Authorization Failed"]
   end
-
-  @spaces.to_json
-end
-
-# Returns Spaces that belong to a Parent 
-get "/space/:space_id/included_spaces.json" do
-  @space = Space.where("space__c = ?",  params[:space_id])
-
- # if @space.included_spaces__c = 0
-    # Use the current Space
-  @spaces = Included_Space.where("belongs_to__c = ?", params[:space_id])
-  #content_type :json
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
-  { 
-    :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-  @spaces.to_json
-end
-
-# Test Webhook
-get "/venue/:venue_id/spaces" do
-  @spaces = Space.where("venue__c = ?", params[:venue_id])
-  #content_type :json
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
-  { 
-    :body => @spaces.to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-  @spaces.to_json
-end
-
-get "/venue/spaces.json" do
-  @spaces = Space.where("venue__c = ?", params[:venue_id])
-  #content_type :json
-  HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1tx4k1/",
-  { 
-    :body => [ {:name => 'value1', :privacy => 'value2'} ].to_json,
-    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-  })
-  @spaces.to_json
-end
-
-get "/:object/:record/output.json" do
-  @space = Space.find_by_sfid(params[:record])
-  content_type :json
-  { :name => @space.name, :privacy => @space.privacy }.to_json
-end
-
-get '/example.json' do
-  content_type :json
-  { :name => 'value1', :privacy => 'value2' }.to_json
-end
-
-get "/create" do
-  dashboard_url = 'https://dashboard.heroku.com/'
-  match = /(.*?)\.herokuapp\.com/.match(request.host)
-  dashboard_url << "apps/#{match[1]}/resources" if match && match[1]
-  redirect to(dashboard_url)
 end
