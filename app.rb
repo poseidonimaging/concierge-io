@@ -242,7 +242,7 @@ post "/hook/retrieve/spaces" do
     puts "Sent Spaces Hook"
     puts "Writing Spaces"
     @spaces.to_json
-    [200, {}, "Success"]
+    [200, {"status"=>"success"}, "Success"] #yeah it should work
   else
     [400, {}, "Authorization Failed"]
   end
