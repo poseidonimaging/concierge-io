@@ -182,7 +182,7 @@ end
 
 # Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
 post "/hook/retrieve/spaces" do
-  if request.env['HTTP_AUTHORIZATION'] == "abcd1234"
+  if request.env['Auth-Token'] == "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
     #  {"end"=>"2017-06-15T00:00:00.000+0000",
