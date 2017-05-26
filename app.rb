@@ -184,7 +184,7 @@ end
 post "/hook/retrieve/spaces" do
   puts "Hello Data"
   puts request.env
-  if request.env['Auth-Token'] === "abcd1234"
+  if request.env['HTTP_AUTH_TOKEN'] === "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
     #  {"end"=>"2017-06-15T00:00:00.000+0000",
