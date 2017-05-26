@@ -242,7 +242,7 @@ post "/hook/retrieve/spaces" do
     @spaces.to_json
     [200, {}, "Success"]
   else
-    [301, {}, "Authorization Failed"]
+    [400, {}, "Authorization Failed"]
   end
 end
 
