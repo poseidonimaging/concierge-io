@@ -296,7 +296,8 @@ post "/hook/retrieve/the-spaces" do
       # Sends all Included Spaces to Check Availability Zap
     })
     puts "Sent Sub Spaces Hook"
-    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
+    #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
+    HTTParty.post("https://requestb.in/1k7e51c1",
     {
       :body => @spaces.to_json,
       :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
