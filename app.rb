@@ -181,7 +181,7 @@ end
 
 
 # Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
-post "/hook/retrieve/spaces" do
+route :get, :post, "/hook/retrieve/spaces" do
   if request.env['Auth-Token'] === "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
