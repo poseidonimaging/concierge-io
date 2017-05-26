@@ -277,17 +277,17 @@ post "/hook/retrieve-spaces" do
     end
     puts "Retrieved and Mapped Sub Spaces"
     puts "Entering Loop"
-    @parent_spaces.each do |space|
-    space = "#{space.sfid}"
-    @included_spaces = Included_Space.where("belongs_to__c = ?", space)
-    puts "Posting #{space.sfid} to Zapier"
-    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
-    {
-      :body => @included_spaces.to_json,
-      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+    #@parent_spaces.each do |space|
+    #space = "#{space.sfid}"
+    #@included_spaces = Included_Space.where("belongs_to__c = ?", space)
+    #puts "Posting #{space.sfid} to Zapier"
+    #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+    #{
+    #  :body => @included_spaces.to_json,
+     # :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
       # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
-    })
-    end
+    #})
+    #end
     puts "Out of Loop"
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
     {
