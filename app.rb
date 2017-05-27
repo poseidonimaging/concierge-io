@@ -181,7 +181,7 @@ end
 
 
 # Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
-post "/hook/retrieve/spaces" do
+post "/hook/availability/venue" do
   if request.env['HTTP_AUTH_TOKEN'] === "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
@@ -216,7 +216,6 @@ post "/hook/retrieve/spaces" do
     puts "Entering Loop"
     
     @parent_spaces.each do |space|
-      #space = "#{space.sfid}"
       @included_spaces = Included_Space.where("belongs_to__c = ?", space.sfid)
       puts "Posting #{space.sfid} to Zapier"
       HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
@@ -251,9 +250,10 @@ post "/hook/retrieve/spaces" do
   end
 end
 
-# Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
-post "/hook/retrieve-spaces" do
 
+# Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
+post "/hook/availability/space" do
+  if request.env['HTTP_AUTH_TOKEN'] === "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
     #  {"end"=>"2017-06-15T00:00:00.000+0000",
@@ -267,52 +267,59 @@ post "/hook/retrieve-spaces" do
 
     #  query each value of the hash by data['name of the key']
     #  Example data['end']
+
+    # This route should only retrieve one parent space, all the included space relationships.
+    # Should work as the above route, but we only need to send sub_space data on spaces
+    # that are included in the single parent_space
+
     puts "Got the data"
-    @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0)
-    puts "Retrieved Parent Spaces"
-    @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
-    s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-    data['start'],"end": data['end'])
+    
+    @included_spaces = Included_Space.where("belongs_to__c = ?", data['sfid'])
+      
+    @included_spaces.each do |space|
+      @sub_spaces = Space.where("sfid = ?", data['sfid']).map do |s|
+        s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+        data['start'],"end": data['end'])
+
+        HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
+        {
+          :body => @sub_spaces.to_json,
+          :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+          # Sends all Included Spaces to Check Availability Zap
+        })
+      end
     end
-    puts "Retrieved and Mapped Spaces"
-    @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?",
-    data['venue'],0).map do |s|
-    s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-    data['start'],"end": data['end'])
+
+    @spaces = Space.where("sfid = ?", space.sfid).map do |s|
+      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+      data['start'],"end": data['end'])
+      HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
+      {
+        :body => @spaces.to_json,
+        :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+        # Sends Parent Space to Compile Parent Space Availability
+        # Zap delayed from above two, compiling the information from both into Parent Availability
+      })
     end
-    puts "Retrieved and Mapped Sub Spaces"
-    puts "Entering Loop"
-    #@parent_spaces.each do |space|
-    #space = "#{space.sfid}"
-    #@included_spaces = Included_Space.where("belongs_to__c = ?", space)
-    #puts "Posting #{space.sfid} to Zapier"
-    #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
-    #{
-    #  :body => @included_spaces.to_json,
-     # :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+
+    @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", data['venue'],0).map do |s|
+      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+      data['start'],"end": data['end'])
+    end
+    
+
+    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+    {
+      :body => @included_spaces.to_json,
+      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
       # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
-    #})
-    #end
-    puts "Out of Loop"
-    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
-    {
-      :body => @sub_spaces.to_json,
-      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-      # Sends all Included Spaces to Check Availability Zap
     })
-    puts "Sent Sub Spaces Hook"
-    #HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
-    HTTParty.post("https://requestb.in/1k7e51c1",
-    {
-      :body => @spaces.to_json,
-      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-      # Sends Parent Space to Compile Parent Space Availability
-      # Zap delayed from above two, compiling the information from both into Parent Availability
-    })
-    puts "Sent Spaces Hook"
+
     puts "Writing Spaces"
     @spaces.to_json
     [200, {}, "Success"]
-
+  else
+    [400, {}, "Authorization Failed"]
+  end
 end
 
