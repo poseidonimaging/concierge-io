@@ -197,31 +197,36 @@ post "/hook/retrieve/spaces" do
     #  query each value of the hash by data['name of the key']
     #  Example data['end']
     puts "Got the data"
+    
     @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0)
     puts "Retrieved Parent Spaces"
+    
     @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
-    s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-    data['start'],"end": data['end'])
+      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+      data['start'],"end": data['end'])
     end
+    
     puts "Retrieved and Mapped Spaces"
-    @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?",
-    data['venue'],0).map do |s|
-    s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-    data['start'],"end": data['end'])
+    @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", data['venue'],0).map do |s|
+      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+      data['start'],"end": data['end'])
     end
+    
     puts "Retrieved and Mapped Sub Spaces"
     puts "Entering Loop"
+    
     @parent_spaces.each do |space|
-    space = space.sfid
-    @included_spaces = Included_Space.where("belongs_to__c = ?", space)
-    puts "Posting #{space.sfid} to Zapier"
-    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
-    {
-      :body => @included_spaces.to_json,
-      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-      # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
-    })
+      #space = "#{space.sfid}"
+      @included_spaces = Included_Space.where("belongs_to__c = ?", space.sfid)
+      puts "Posting #{space.sfid} to Zapier"
+      HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
+      {
+        :body => @included_spaces.to_json,
+        :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+        # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
+      })
     end
+    
     puts "Out of Loop"
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
     {
