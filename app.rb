@@ -277,25 +277,28 @@ post "/hook/availability/space" do
     puts "Got the data"
     
     @included_spaces = Included_Space.where("belongs_to__c = ?", data['sfid'])
+    puts "Have Included Spaces"
       
     @included_spaces.each do |space|
       @sub_spaces = Space.where("sfid = ?", space.space__c).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
         data['start'],"end": data['end'])
-
-        HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
-        {
-          :body => @sub_spaces.to_json,
-          :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-          # Sends all Included Spaces to Check Availability Zap
-        })
       end
+
+      puts "Posting #{space.name} to Zapier for Availability Check"
+      HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
+      {
+        :body => @sub_spaces.to_json,
+        :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+        # Sends all Included Spaces to Check Availability Zap
+      })
     end
 
     @spaces = Space.where("sfid = ?", data['sfid']).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
       data['start'],"end": data['end'])
-      
+
+      puts "Posting Parent Space to Zapier"
       HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
       {
         :body => @spaces.to_json,
@@ -305,6 +308,7 @@ post "/hook/availability/space" do
       })
     end
 
+    puts "Posting Relationships to Zapier"
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
     {
       :body => @included_spaces.to_json,
