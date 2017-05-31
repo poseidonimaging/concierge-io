@@ -279,7 +279,7 @@ post "/hook/availability/space" do
     @included_spaces = Included_Space.where("belongs_to__c = ?", data['sfid'])
       
     @included_spaces.each do |space|
-      @sub_spaces = Space.where("sfid = ?", space.sfid).map do |s|
+      @sub_spaces = Space.where("sfid = ?", space.space__c).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
         data['start'],"end": data['end'])
 
@@ -295,6 +295,7 @@ post "/hook/availability/space" do
     @spaces = Space.where("sfid = ?", data['sfid']).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
       data['start'],"end": data['end'])
+      
       HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
       {
         :body => @spaces.to_json,
