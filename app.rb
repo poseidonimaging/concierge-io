@@ -297,16 +297,16 @@ post "/hook/availability/space" do
     @spaces = Space.where("sfid = ?", data['sfid']).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
       data['start'],"end": data['end'])
-
-      puts "Posting Parent Space to Zapier"
-      HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
-      {
-        :body => @spaces.to_json,
-        :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-        # Sends Parent Space to Compile Parent Space Availability
-        # Zap delayed from above two, compiling the information from both into Parent Availability
-      })
     end
+
+    puts "Posting Parent Space to Zapier"
+    HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
+    {
+      :body => @spaces.to_json,
+      :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+      # Sends Parent Space to Compile Parent Space Availability
+      # Zap delayed from above two, compiling the information from both into Parent Availability
+    })
 
     puts "Posting Relationships to Zapier"
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
