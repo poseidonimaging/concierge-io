@@ -182,6 +182,7 @@ end
 
 # Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
 post "/hook/availability/venue" do
+  puts request.env
   if request.env['HTTP_AUTH_TOKEN'] === "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
@@ -205,28 +206,27 @@ post "/hook/availability/venue" do
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
       data['start'],"end": data['end'])
     end
-    
     puts "Retrieved and Mapped Spaces"
+
     @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", data['venue'],0).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
       data['start'],"end": data['end'])
-    end
-    
+    end   
     puts "Retrieved and Mapped Sub Spaces"
+
     puts "Entering Loop"
-    
     @parent_spaces.each do |space|
       @included_spaces = Included_Space.where("belongs_to__c = ?", space.sfid)
-      puts "Posting #{space.sfid} to Zapier"
+      puts "Posting #{space.name} to Zapier"
       HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
       {
         :body => @included_spaces.to_json,
         :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
         # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
       })
-    end
-    
+    end   
     puts "Out of Loop"
+
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
     {
       :body => @sub_spaces.to_json,
@@ -234,6 +234,7 @@ post "/hook/availability/venue" do
       # Sends all Included Spaces to Check Availability Zap
     })
     puts "Sent Sub Spaces Hook"
+  
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
     {
       :body => @spaces.to_json,
@@ -253,6 +254,7 @@ end
 
 # Properly parsed JSON that takes data from Zapier, processes it and returns JSON array
 post "/hook/availability/space" do
+  puts request.env
   if request.env['HTTP_AUTH_TOKEN'] === "abcd1234"
     data = JSON.parse(request.body.read)
     # converted data hash
@@ -277,7 +279,7 @@ post "/hook/availability/space" do
     @included_spaces = Included_Space.where("belongs_to__c = ?", data['sfid'])
       
     @included_spaces.each do |space|
-      @sub_spaces = Space.where("sfid = ?", data['sfid']).map do |s|
+      @sub_spaces = Space.where("sfid = ?", space.sfid).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
         data['start'],"end": data['end'])
 
@@ -301,12 +303,6 @@ post "/hook/availability/space" do
         # Zap delayed from above two, compiling the information from both into Parent Availability
       })
     end
-
-    @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", data['venue'],0).map do |s|
-      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-      data['start'],"end": data['end'])
-    end
-    
 
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
     {
