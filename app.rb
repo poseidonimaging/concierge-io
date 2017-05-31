@@ -282,7 +282,7 @@ post "/hook/availability/space" do
     @included_spaces.each do |space|
       @sub_spaces = Space.where("sfid = ?", space.space__c).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-        data['start'],"end": data['end'])
+        data['start'],"end": data['end'],"parent": space.belongs_to__c)
       end
 
       puts "Posting #{space.name} to Zapier for Availability Check"
