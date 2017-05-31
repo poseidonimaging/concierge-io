@@ -292,7 +292,7 @@ post "/hook/availability/space" do
       end
     end
 
-    @spaces = Space.where("sfid = ?", space.sfid).map do |s|
+    @spaces = Space.where("sfid = ?", data['sfid']).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
       data['start'],"end": data['end'])
       HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1adgpy/",
