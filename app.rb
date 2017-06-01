@@ -318,7 +318,7 @@ post "/hook/availability/space" do
 
     puts "Writing Spaces"
     @spaces.to_json
-    [200, {}, "Success"]
+    [200, {status: "success"}.to_json]
   else
     [400, {}, "Authorization Failed"]
   end
