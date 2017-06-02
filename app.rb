@@ -282,7 +282,7 @@ post "/hook/availability/space" do
     @included_spaces.each do |space|
       @sub_spaces = Space.where("sfid = ?", space.space__c).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-        data['start'],"end": data['end'],"parent": space.belongs_to__c)
+        data['start'],"end": data['end'],"parent": space.belongs_to__c,"slack_timestamp": data['slack_timestamp'])
       end
 
       puts "Posting #{space.name} to Zapier for Availability Check"
@@ -296,7 +296,7 @@ post "/hook/availability/space" do
 
     @spaces = Space.where("sfid = ?", data['sfid']).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-      data['start'],"end": data['end'])
+      data['start'],"end": data['end'],"slack_timestamp": data['slack_timestamp'])
     end
 
     puts "Posting Parent Space to Zapier"
@@ -320,7 +320,7 @@ post "/hook/availability/space" do
     @spaces.to_json
     [200, {status: "success"}.to_json]
   else
-    [400, {}, "Authorization Failed"]
+    [401, {status: "authorization failed"}.to_json]
   end
 end
 
