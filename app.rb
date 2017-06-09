@@ -199,7 +199,10 @@ post "/hook/availability/venue" do
     #  Example data['end']
     puts "Got the data"
     
-    @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0)
+    @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
+      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+      data['start'],"end": data['end'])
+    end
     puts "Retrieved Parent Spaces"
     
     @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
@@ -243,11 +246,12 @@ post "/hook/availability/venue" do
       # Zap delayed from above two, compiling the information from both into Parent Availability
     })
     puts "Sent Spaces Hook"
+
     puts "Writing Spaces"
     @spaces.to_json
-    [200, {}, "Success"]
+    [200, {status: "success"}.to_json]
   else
-    [400, {}, "Authorization Failed"]
+    [401, {status: "authorization failed"}.to_json]
   end
 end
 
@@ -276,7 +280,10 @@ post "/hook/availability/space" do
 
     puts "Got the data"
     
-    @included_spaces = Included_Space.where("belongs_to__c = ?", data['sfid'])
+    @included_spaces = Included_Space.where("belongs_to__c = ?", data['sfid']).map do |s|
+      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+      data['start'],"end": data['end'])
+    end
     puts "Have Included Spaces"
       
     @included_spaces.each do |space|
