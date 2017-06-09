@@ -204,13 +204,13 @@ post "/hook/availability/venue" do
     
     @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-      data['start'],"end": data['end'])
+      data['start'],"end": data['end'],"slack_timestamp": data['slack_timestamp'])
     end
     puts "Retrieved and Mapped Spaces"
 
     @sub_spaces = Space.where("venue__c = ? AND included_spaces__c = ?", data['venue'],0).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-      data['start'],"end": data['end'])
+      data['start'],"end": data['end'],"slack_timestamp": data['slack_timestamp'])
     end   
     puts "Retrieved and Mapped Sub Spaces"
 
@@ -218,7 +218,7 @@ post "/hook/availability/venue" do
     @parent_spaces.each do |space|
       @included_spaces = Included_Space.where("belongs_to__c = ?", space.sfid).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-        data['start'],"end": data['end'],"parent": space.belongs_to__c,"slack_timestamp": data['slack_timestamp'])
+        data['start'],"end": data['end'], "slack_timestamp": data['slack_timestamp'])
       end
 
       puts "Posting #{space.name} to Zapier"
@@ -307,7 +307,7 @@ post "/hook/availability/space" do
 
     @relationships = Included_Space.where("belongs_to__c = ?", data['sfid']).map do |s|
       s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-      data['start'],"end": data['end'])
+      data['start'],"end": data['end'],"slack_timestamp": data['slack_timestamp'])
     end
     puts "Have Included Spaces"
 
