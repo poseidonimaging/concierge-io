@@ -199,10 +199,7 @@ post "/hook/availability/venue" do
     #  Example data['end']
     puts "Got the data"
     
-    @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
-      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-      data['start'],"end": data['end'])
-    end
+    @parent_spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0)
     puts "Retrieved Parent Spaces"
     
     @spaces = Space.where("venue__c = ? AND included_spaces__c > ?", data['venue'],0).map do |s|
@@ -232,7 +229,7 @@ post "/hook/availability/venue" do
         # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
       })
     end   
-    
+
     puts "Out of Loop"
 
     HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1znao4/",
