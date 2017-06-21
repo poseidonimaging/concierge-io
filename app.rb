@@ -216,7 +216,7 @@ post "/hook/availability/venue" do
 
     puts "Entering Loop"
     @parent_spaces.each do |space|
-      @included_spaces = Included_Space.where("belongs_to__c = ? AND space__c != ?", space.sfid,data['exclude']).map do |s|
+      @included_spaces = Included_Space.where("belongs_to__c = ?", space.sfid).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
         data['start'],"end": data['end'], "slack_timestamp": data['slack_timestamp'])
       end
