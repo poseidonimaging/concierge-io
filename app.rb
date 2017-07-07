@@ -219,7 +219,7 @@ post "/hook/availability/venue" do
     @parent_spaces.each do |space|
       @all_included_spaces = Included_Space.where("belongs_to__c = ?", space.sfid)
       next if @all_included_spaces.count != @all_included_spaces.where.not(space__c: data['exclude'] ).count
-      @included_spaces = @all_included_spaces.map do |s|
+      @included_spaces = Included_Space.where("belongs_to__c = ?", space.sfid).map do |s|
         s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
         data['start'],"end": data['end'], "slack_timestamp": data['slack_timestamp'])
       end
