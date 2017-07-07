@@ -224,10 +224,9 @@ post "/hook/availability/venue" do
         data['start'],"end": data['end'], "slack_timestamp": data['slack_timestamp'])
       end
       @spaces << space
-
-      @spaces = @spaces.map{ |s|
-      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
-      data['start'],"end": data['end'],"slack_timestamp": data['slack_timestamp']) }
+    
+      #Save and run it please 
+      
       
       puts "Posting #{space.name} to Zapier"
       HTTParty.post("https://hooks.zapier.com/hooks/catch/962269/1efcdv/",
@@ -237,6 +236,10 @@ post "/hook/availability/venue" do
         # Sends Parent/Included Space Relationships to Compile Parent Space Storage Zap
       })
     end   
+
+    @spaces = @spaces.map{ |s|
+      s.attributes.merge("booking": data['booking'],"calendar": data['calendar'],"start":
+      data['start'],"end": data['end'],"slack_timestamp": data['slack_timestamp']) }
 
     puts "Out of Loop"
 
